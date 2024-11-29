@@ -30,6 +30,7 @@ def create_strangle(symbol: str):
     # Fetch parameters from cfg
     symbol_params = cfg.params[symbol]
     quantity = symbol_params["quantity"]
+    sec_type = symbol_params["sec_type"]
     live_order = symbol_params["live_order"]
     exchange = symbol_params["exchange"]
     opt_exchange = symbol_params["opt_exchange"]
@@ -37,7 +38,7 @@ def create_strangle(symbol: str):
 
     # Fetch the qualified underlying contract
     und_contract = qualify_contract(
-        symbol=symbol, secType=symbol_params["sec_type"], exchange=exchange, currency='USD'
+        symbol=symbol, secType=sec_type, exchange=exchange, currency='USD'
     )
     current_price = get_current_mid_price(und_contract)
 
