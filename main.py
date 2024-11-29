@@ -7,6 +7,18 @@ from math import isnan
 import cfg
 
 
+def adjust_to_tick_size(price, tick_size):
+    """
+    Adjusts a given price to the nearest valid tick size.
+    Args:
+        price (float): The price to adjust.
+        tick_size (float): The minimum tick size.
+    Returns:
+        float: The adjusted price.
+    """
+    return round(round(price / tick_size) * tick_size, 2)
+
+
 def create_strangle(symbol: str):
     """
     Creates and submits a naked strangle for the given symbol with parameters from cfg.py.
@@ -21,6 +33,7 @@ def create_strangle(symbol: str):
     live_order = symbol_params["live_order"]
     exchange = symbol_params["exchange"]
     opt_exchange = symbol_params["opt_exchange"]
+    min_tick = symbol_params["min_tick"]
 
     # Fetch the qualified underlying contract
     und_contract = qualify_contract(
@@ -38,10 +51,16 @@ def create_strangle(symbol: str):
     expiry = get_today_expiry()
 
     # Use get_closest_strike to determine put and call strikes
-    put_strike = get_closest_strike(contract=und_contract, right='P', exchange=opt_exchange, expiry=expiry,
-                                    price=current_price - symbol_params["put_strike_distance"] )
-    call_strike = get_closest_strike(contract=und_contract, right='C', exchange=opt_exchange, expiry=expiry,
-                                     price=current_price + symbol_params["call_strike_distance"])
+    put_strike = adjust_to_tick_size(
+        get_closest_strike(contract=und_contract, right='P', exchange=opt_exchange, expiry=expiry,
+                           price=current_price - symbol_params["put_strike_distance"]),
+        min_tick
+    )
+    call_strike = adjust_to_tick_size(
+        get_closest_strike(contract=und_contract, right='C', exchange=opt_exchange, expiry=expiry,
+                           price=current_price + symbol_params["call_strike_distance"]),
+        min_tick
+    )
 
     if isnan(put_strike) or isnan(call_strike):
         print(f"Error: Could not find valid strikes for {symbol}.")
@@ -75,7 +94,12 @@ def create_strangle(symbol: str):
         print(f"Warning: Invalid bid price ({bid_price}) for {symbol} combo. Skipping order.")
         return
 
-    print(f"Combo prices - Bid: {bid_price}, Mid: {mid_price}, Ask: {ask_price}")
+    # Adjust prices to valid tick sizes
+    bid_price = adjust_to_tick_size(bid_price, min_tick)
+    mid_price = adjust_to_tick_size(mid_price, min_tick)
+    ask_price = adjust_to_tick_size(ask_price, min_tick)
+
+    print(f"Combo prices - Adjusted Bid: {bid_price}, Mid: {mid_price}, Ask: {ask_price}")
 
     # Submit an adaptive limit order at the bid price
     submit_adaptive_order_trailing_stop(
@@ -84,9 +108,11 @@ def create_strangle(symbol: str):
         action='SELL',
         is_live=live_order,
         quantity=quantity,
-        stop_loss_amt=mid_price,  # Use the bid price for the limit
-        limit_price=bid_price  # Explicitly set the limit price to the bid
+        stop_loss_amt=mid_price,  # Use the adjusted mid price for the stop loss
+        limit_price=bid_price  # Explicitly set the adjusted limit price to the bid
     )
+
+
 def main():
     for symbol in cfg.SYMBOLS:
         create_strangle(symbol)

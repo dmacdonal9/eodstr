@@ -9,7 +9,7 @@ ib_clientid = 1  # Client ID should also be an integer
 params = {
     'SPY': {
         "quantity": 1,
-        "min_tick": 0.1,
+        "min_tick": 0.01,
         "live_order": False,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',
@@ -20,7 +20,7 @@ params = {
     },
     'IWM': {
         "quantity": 2,
-        "min_tick": 0.1,
+        "min_tick": 0.01,
         "live_order": False,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',
@@ -31,7 +31,7 @@ params = {
     },
     'QQQ': {
         "quantity": 1,
-        "min_tick": 0.1,
+        "min_tick": 0.01,
         "live_order": False,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',

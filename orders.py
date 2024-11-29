@@ -5,12 +5,6 @@ from typing import Optional
 import cfg
 from math import isnan
 
-# Define the minimum tick sizes for various symbols
-minTick: dict[str, float] = {
-    "ES": 0.05,
-    "SPX": 0.1
-}
-
 def create_bag(und_contract: Contract, legs: list, actions: list, ratios: list) -> Contract:
     print(f"Creating combo bag with parameters: {locals()}")
     bag_contract = Contract()
