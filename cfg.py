@@ -1,9 +1,9 @@
-SYMBOLS = ['SPY', 'QQQ', 'IWM']
+SYMBOLS = ['SPY', 'QQQ']
 myStrategyTag = 'eodstr'
 
 # IBKR Connection Parameters
 ib_host = '127.0.0.1'
-ib_port = 7497  # Port should be an integer
+ib_port = 7496  # Port should be an integer
 ib_clientid = 1  # Client ID should also be an integer
 
 params = {
