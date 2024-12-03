@@ -15,8 +15,8 @@ params = {
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
-        "call_strike_distance": 1,  # Percentage offset for long strikes
-        "put_strike_distance": 1, # Percentage offset for short strikes
+        "call_strike_distance": 1,  # Strike offset for long strikes
+        "put_strike_distance": 1,  # Strike offset for short strikes
     },
     'IWM': {
         "quantity": 2,
@@ -26,8 +26,8 @@ params = {
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
-        "call_strike_distance": 1,  # Percentage offset for long strikes
-        "put_strike_distance": 1, # Percentage offset for short strikes
+        "call_strike_distance": 1,  # Strike offset for long strikes
+        "put_strike_distance": 1,  # Strike offset for short strikes
     },
     'QQQ': {
         "quantity": 1,
@@ -37,8 +37,8 @@ params = {
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
-        "call_strike_distance": 1,  # Percentage offset for long strikes
-        "put_strike_distance": 1, # Percentage offset for short strikes
+        "call_strike_distance": 1,  # Strike offset for long strikes
+        "put_strike_distance": 1,  # Strike offset for short strikes
 
     }
 }
