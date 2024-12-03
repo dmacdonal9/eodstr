@@ -1,5 +1,6 @@
 SYMBOLS = ['SPY', 'QQQ']
 myStrategyTag = 'eodstr'
+stop_loss_multiplier = 1.5
 
 # IBKR Connection Parameters
 ib_host = '127.0.0.1'

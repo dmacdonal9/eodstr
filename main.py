@@ -105,11 +105,11 @@ def create_strangle(symbol: str):
     # Submit an adaptive limit order at the bid price
     submit_adaptive_order_trailing_stop(
         order_contract=bag_contract,
-        order_type='LMT',  # Change to limit order
+        order_type='LMT',
         action='SELL',
         is_live=live_order,
         quantity=quantity,
-        stop_loss_amt=mid_price,  # Use the adjusted mid price for the stop loss
+        stop_loss_amt=mid_price * cfg.stop_loss_multiplier,  # Use the adjusted mid price for the stop loss
         limit_price=bid_price  # Explicitly set the adjusted limit price to the bid
     )
 

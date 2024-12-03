@@ -105,8 +105,8 @@ def find_put_spread(option_chain, current_price, target_mid_price, target_width,
 
 if __name__ == "__main__":
     # Parameters
-    symbol = 'SPX'
-    sec_type = 'IND'
+    symbol = 'ES'
+    sec_type = 'FUT'
     exchange = 'CBOE'
     expiry = get_today_expiry()
     target_mid_price = 0.5
