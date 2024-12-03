@@ -10,7 +10,7 @@ params = {
     'SPY': {
         "quantity": 1,
         "min_tick": 0.01,
-        "live_order": False,
+        "live_order": True,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
@@ -21,7 +21,7 @@ params = {
     'IWM': {
         "quantity": 2,
         "min_tick": 0.01,
-        "live_order": False,
+        "live_order": True,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
@@ -32,7 +32,7 @@ params = {
     'QQQ': {
         "quantity": 1,
         "min_tick": 0.01,
-        "live_order": False,
+        "live_order": True,
         "exchange": 'CBOE',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',

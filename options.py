@@ -6,6 +6,26 @@ import logging
 
 logging.getLogger('ib_insync').setLevel(logging.CRITICAL)
 
+def get_option_chain(symbol, expiry, exchange='SMART'):
+    """
+    Retrieve the option chain for a given symbol and expiry.
+
+    Args:
+        symbol (str): The symbol for the underlying (e.g., 'SPX').
+        expiry (str): Expiration date in 'YYYYMMDD' format.
+        exchange (str): Exchange for the options.
+
+    Returns:
+        list: A list of Option contracts.
+    """
+    print(f"Fetching option chain for {symbol} with expiry {expiry}...")
+    option_details = ib.reqContractDetails(
+        Contract(symbol=symbol, secType='OPT', exchange=exchange, currency='USD', lastTradeDateOrContractMonth=expiry)
+    )
+    options = [detail.contract for detail in option_details]
+    print(f"Retrieved {len(options)} option contracts.")
+    return options
+
 def get_closest_strike(contract, right, exchange, expiry, price):
     """
     Find the closest strike price to the given target price.
