@@ -6,25 +6,71 @@ import logging
 
 logging.getLogger('ib_insync').setLevel(logging.CRITICAL)
 
-def get_option_chain(symbol, expiry, exchange='SMART'):
+
+def get_option_chain(symbol,und_conid,expiry, exchange, sectype):
     """
-    Retrieve the option chain for a given symbol and expiry.
+    Retrieve the option chain for a given symbol and expiry using reqSecDefOptParams.
 
     Args:
-        symbol (str): The symbol for the underlying (e.g., 'SPX').
+        symbol (str): The symbol for the underlying (e.g., 'ES').
         expiry (str): Expiration date in 'YYYYMMDD' format.
         exchange (str): Exchange for the options.
+        sectype (str): The security type (e.g., 'FUT' for futures).
 
     Returns:
         list: A list of Option contracts.
     """
-    print(f"Fetching option chain for {symbol} with expiry {expiry}...")
-    option_details = ib.reqContractDetails(
-        Contract(symbol=symbol, secType='OPT', exchange=exchange, currency='USD', lastTradeDateOrContractMonth=expiry)
+    print(f"Fetching option chain parameters for {symbol} on {exchange}...")
+
+    # Request security definition option parameters
+    opt_params = ib.reqSecDefOptParams(
+        underlyingSymbol=symbol,
+        futFopExchange=exchange,
+        underlyingSecType=sectype,
+        underlyingConId=und_conid  # Use 0 if the underlying contract ID is unknown
     )
-    options = [detail.contract for detail in option_details]
-    print(f"Retrieved {len(options)} option contracts.")
-    return options
+
+    # Find the matching option chain details
+    matching_params = [
+        params for params in opt_params if params.expirations and expiry in params.expirations
+    ]
+
+    if not matching_params:
+        print(f"No matching option chain found for {symbol} with expiry {expiry}.")
+        return []
+
+    print(f"Found matching option parameters for {symbol}.")
+
+    # Extract strike prices and create option contracts
+    option_contracts = []
+    for params in matching_params:
+        for strike in params.strikes:
+            if strike:  # Ensure strike is valid
+                option_contracts.append(
+                    Contract(
+                        symbol=symbol,
+                        secType="FOP",
+                        exchange=params.exchange,
+                        currency='USD',
+                        strike=strike,
+                        right="C",  # Call; you can also include "P" for Put
+                        lastTradeDateOrContractMonth=expiry
+                    )
+                )
+                option_contracts.append(
+                    Contract(
+                        symbol=symbol,
+                        secType="FOP",
+                        exchange=params.exchange,
+                        currency='USD',
+                        strike=strike,
+                        right="P",  # Put
+                        lastTradeDateOrContractMonth=expiry
+                    )
+                )
+
+    print(f"Retrieved {len(option_contracts)} option contracts.")
+    return option_contracts
 
 def get_closest_strike(contract, right, exchange, expiry, price):
     """

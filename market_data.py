@@ -6,7 +6,7 @@ from typing import Optional
 
 def get_current_mid_price(my_contract: Contract, max_retries=3, retry_interval=1, refresh=False) -> Optional[float]:
     """
-    Retrieve the midpoint price for a contract, falling back to the last or close price if bid/ask are unavailable.
+    Retrieve the midpoint price for a contract, falling back to last price or previous close if bid/ask are unavailable.
 
     Args:
         my_contract: The contract to query.
@@ -15,7 +15,7 @@ def get_current_mid_price(my_contract: Contract, max_retries=3, retry_interval=1
         refresh: Whether to refresh market data.
 
     Returns:
-        The midpoint price if available, or the last/close price as a fallback.
+        The midpoint price if available, the last price as a fallback, or the previous close price as a final fallback.
     """
     print(f"Entering function: get_current_mid_price with parameters: {locals()}")
 
@@ -23,7 +23,7 @@ def get_current_mid_price(my_contract: Contract, max_retries=3, retry_interval=1
         try:
             # Request market data
             ticker = ib.reqMktData(my_contract, '', refresh, False)
-            ib.sleep(retry_interval)
+            ib.sleep(1)
 
             # Check for valid bid/ask prices
             if (
@@ -35,25 +35,40 @@ def get_current_mid_price(my_contract: Contract, max_retries=3, retry_interval=1
                 print(f"Info: Midpoint price retrieved: {mid_price}")
                 return mid_price
 
-            # Fall back to last or close price
+            # Fall back to last price if bid/ask are unavailable or invalid
             if ticker.last is not None and not math.isnan(ticker.last) and ticker.last != -1.0:
                 print(f"Info: Bid/Ask unavailable. Using last price as fallback: {ticker.last}")
                 return ticker.last
 
-            if ticker.close is not None and not math.isnan(ticker.close) and ticker.close != -1.0:
-                print(f"Info: Bid/Ask unavailable. Using close price as fallback: {ticker.close}")
-                return ticker.close
-
-            print(f"Warning: No valid data: Bid={ticker.bid}, Ask={ticker.ask}, Last={ticker.last}, Close={ticker.close}")
+            print(f"Warning: No valid data: Bid={ticker.bid}, Ask={ticker.ask}, Last={ticker.last}")
 
         except Exception as e:
             print(f"Error: Error retrieving price for {my_contract} on attempt {attempt + 1}: {e}")
 
         time.sleep(retry_interval)
 
-    print(f"Error: Failed to retrieve price for {my_contract} after {max_retries} attempts.")
-    return None
+    # Attempt to retrieve the previous close price as a final fallback
+    try:
+        historical_data = ib.reqHistoricalData(
+            my_contract,
+            endDateTime='',
+            durationStr='1 D',
+            barSizeSetting='1 day',
+            whatToShow='TRADES',
+            useRTH=True
+        )
+        if historical_data:
+            prev_close_price = historical_data[-1].close
+            print(f"Info: Using previous close price as fallback: {prev_close_price}")
+            return prev_close_price
+        else:
+            print(f"Error: No historical data available for previous close price fallback.")
 
+    except Exception as e:
+        print(f"Error: Failed to retrieve previous close price for {my_contract}: {e}")
+
+    print(f"Error: Failed to retrieve price for {my_contract} after all attempts.")
+    return None
 def round_to_tick(price, tick_size):
     print(f"Entering function: round_to_tick with parameters: {locals()}")
     return round(price / tick_size) * tick_size

@@ -114,10 +114,6 @@ def create_strangle(symbol: str):
     )
 
 
-def main():
+if __name__ == '__main__':
     for symbol in cfg.SYMBOLS:
         create_strangle(symbol)
-
-
-if __name__ == '__main__':
-    main()

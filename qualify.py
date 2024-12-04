@@ -6,7 +6,7 @@ from ib_instance import ib
 def qualify_contract(symbol: str, secType: str, lastTradeDateOrContractMonth: str = '', exchange: str = 'SMART',
                      currency: str = 'USD', strike: float = 0.0, right: str = '',
                      multiplier: str = ''):
-    print(f"Entering function: qualify_contract with parameters: {locals()}")
+    #print(f"Entering function: qualify_contract with parameters: {locals()}")
 
     if secType.upper() == 'STK':
         contract = Stock(symbol=symbol, exchange=exchange, currency=currency)
@@ -32,7 +32,7 @@ def qualify_contract(symbol: str, secType: str, lastTradeDateOrContractMonth: st
         raise ValueError("Unsupported contract type. Supported types are STK, FUT, FOP, OPT, IND.")
 
     try:
-        print(f"Info: Attempting to qualify contract: {contract}")
+        #print(f"Info: Attempting to qualify contract: {contract}")
         ib.qualifyContracts(contract)
 
         # Verify if contract qualification was successful
@@ -64,8 +64,9 @@ def test_option_chain(contract, exchange, expiry):
 
 def get_front_month_contract_date(future_symbol, exchange, mult, expiry):
     print(f"Entering function: get_front_month_contract_date with parameters: {locals()}")
-    contract = Future(symbol=future_symbol, exchange=exchange, multiplier=mult)
+    contract = Future(symbol=future_symbol, exchange=exchange, multiplier=mult,currency='USD')
     contract_details_list = ib.reqContractDetails(contract)
+    print(contract_details_list)
     contracts = [cd.contract for cd in contract_details_list]
     sorted_contracts = sorted(contracts, key=attrgetter('lastTradeDateOrContractMonth'))
 

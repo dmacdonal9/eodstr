@@ -9,10 +9,11 @@ ib_clientid = 1  # Client ID should also be an integer
 
 params = {
     'SPY': {
+        "conid": 756733,
         "quantity": 1,
         "min_tick": 0.01,
         "live_order": True,
-        "exchange": 'CBOE',
+        "exchange": 'SMART',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
@@ -20,10 +21,11 @@ params = {
         "put_strike_distance": 1,  # Strike offset for short strikes
     },
     'IWM': {
+        "conid": 9579970,
         "quantity": 2,
         "min_tick": 0.01,
         "live_order": True,
-        "exchange": 'CBOE',
+        "exchange": 'SMART',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
@@ -31,10 +33,11 @@ params = {
         "put_strike_distance": 1,  # Strike offset for short strikes
     },
     'QQQ': {
+        "conid": 320227571,
         "quantity": 1,
         "min_tick": 0.01,
         "live_order": True,
-        "exchange": 'CBOE',
+        "exchange": 'SMART',
         "opt_exchange": 'CBOE',
         "sec_type": 'STK',
         "mult": '1',
