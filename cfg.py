@@ -1,4 +1,5 @@
 SYMBOLS = ['SPY', 'QQQ']
+SYMBOLS = ['IWM']
 myStrategyTag = 'eodstr'
 stop_loss_multiplier = 1.5
 
