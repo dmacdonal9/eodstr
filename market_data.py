@@ -22,7 +22,7 @@ def get_current_mid_price(my_contract: Contract, max_retries=3, retry_interval=1
     for attempt in range(max_retries):
         try:
             # Request market data
-            ticker = ib.reqMktData(my_contract, '', refresh, False)
+            ticker = ib.reqMktData(my_contract, '', refresh, True)
             ib.sleep(1)
 
             # Check for valid bid/ask prices
