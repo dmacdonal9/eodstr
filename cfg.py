@@ -4,7 +4,7 @@ stop_loss_multiplier = 1.5
 
 # IBKR Connection Parameters
 ib_host = '127.0.0.1'
-ib_port = 7496  # Port should be an integer
+ib_port = 7500  # Port should be an integer
 ib_clientid = 1  # Client ID should also be an integer
 
 params = {
@@ -43,6 +43,5 @@ params = {
         "mult": '1',
         "call_strike_distance": 1,  # Strike offset for long strikes
         "put_strike_distance": 1,  # Strike offset for short strikes
-
     }
 }
